@@ -14,6 +14,10 @@ function loadEventListeners() {
   form.addEventListener("submit", addTask);
   //Remove Task event
   taskList.addEventListener("click", removeTask);
+  //Clear task event
+  clearBtn.addEventListener("click", clearTasks);
+  //Filter through Tasks event
+  filter.addEventListener("keyup", filterTasks);
 }
 
 //Add Task function
@@ -49,12 +53,12 @@ function addTask(e) {
 //Remove Task function
 function removeTask(e) {
   //   console.log(e.target);
-  const delItem = document.querySelector(".delete-item");
+
   //because when we click the a tag it gives us the i tag we need to select the parent Element.
   //Try inspecting remove btn in browser to understand better
   if (e.target.parentElement.classList.contains("delete-item")) {
     if (confirm("Are you Sure?")) {
-      //Materializecss toast similar to sweetAlert2 just not as cool
+      //Materializecss toast similar to sweetAlert2 just not quite as cool
       M.toast({
         html: "Task is Deleted",
         displayLength: 1500,
@@ -65,4 +69,32 @@ function removeTask(e) {
       e.target.parentElement.parentElement.remove();
     }
   }
+}
+
+//Clear All Tasks
+function clearTasks() {
+  //Two ways to remove all tasks ie li's
+
+  //First way, slower way
+  //   taskList.innerHTML = "";
+
+  //Second way, faster way, firstChild gives you the firstChild in the taskList so we are saying while there is a first child, do this...
+  while (taskList.firstChild) {
+    taskList.removeChild(taskList.firstChild);
+  }
+}
+
+//Filter Tasks Function
+function filterTasks(e) {
+  const text = e.target.value.toLowerCase();
+
+  //to convert NodeList or HTML Collection use Array.from()
+  document.querySelectorAll(".collection-item").forEach(task => {
+    const item = task.firstChild.textContent;
+    if (item.toLowerCase().indexOf(text) !== -1) {
+      task.style.display = "block";
+    } else {
+      task.style.display = "none";
+    }
+  });
 }
