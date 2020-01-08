@@ -23,7 +23,13 @@ function loadEventListeners() {
 //Add Task function
 function addTask(e) {
   if (taskInput.value === "") {
-    alert("Add a Task");
+    M.toast({
+      html: "Add a Task",
+      displayLength: 1000,
+      inDuration: 500,
+      outDuration: 750,
+      classes: "rounded"
+    });
   }
 
   //Create li element
