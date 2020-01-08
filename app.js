@@ -10,7 +10,7 @@ loadEventListeners();
 
 //Creating load all event listeners function invoked above
 function loadEventListeners() {
-  //DOM Load event, ie added tasks that are stored to localStorage on to DOM
+  //DOM Load event, ie added tasks that are stored to localStorage on to DOM when DOM loads
   document.addEventListener("DOMContentLoaded", getTasks);
   //Add task event
   form.addEventListener("submit", addTask);
@@ -30,7 +30,7 @@ function getTasks() {
   } else {
     tasks = JSON.parse(localStorage.getItem("tasks"));
   }
-
+  //   console.log(tasks);
   tasks.forEach(task => {
     //Create li element
     const li = document.createElement("li");
@@ -119,8 +119,29 @@ function removeTask(e) {
         classes: "rounded"
       });
       e.target.parentElement.parentElement.remove();
+
+      //Remove from LS ie localStorage
+      removeTaskFromLocalStorage(e.target.parentElement.parentElement);
     }
   }
+}
+
+//Remove Task from LS ie Local Storage
+function removeTaskFromLocalStorage(taskItem) {
+  //   console.log(taskItem.textContent);
+  let tasks;
+  if (localStorage.getItem("tasks") === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+  }
+
+  tasks.forEach((task, index) => {
+    if (taskItem.textContent === task) {
+      tasks.splice(index, 1);
+    }
+  });
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 //Clear All Tasks
