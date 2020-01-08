@@ -10,6 +10,8 @@ loadEventListeners();
 
 //Creating load all event listeners function invoked above
 function loadEventListeners() {
+  //DOM Load event, ie added tasks that are stored to localStorage on to DOM
+  document.addEventListener("DOMContentLoaded", getTasks);
   //Add task event
   form.addEventListener("submit", addTask);
   //Remove Task event
@@ -18,6 +20,35 @@ function loadEventListeners() {
   clearBtn.addEventListener("click", clearTasks);
   //Filter through Tasks event
   filter.addEventListener("keyup", filterTasks);
+}
+
+//Get Tasks stored on localStorage
+function getTasks() {
+  let tasks;
+  if (localStorage.getItem("tasks") === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+  }
+
+  tasks.forEach(task => {
+    //Create li element
+    const li = document.createElement("li");
+    //Add class to li
+    li.className = "collection-item";
+    //Create Text Node and append to li
+    li.appendChild(document.createTextNode(task));
+    //Create new link element
+    const link = document.createElement("a");
+    //Add class to a tag
+    link.className = "delete-item secondary-content";
+    //Add icon html element
+    link.innerHTML = "<i class='fad fa-trash-alt fa-lg'></i>";
+    //Append the link to li
+    li.appendChild(link);
+    //Append li to ul
+    taskList.appendChild(li);
+  });
 }
 
 //Add Task function
@@ -30,30 +61,45 @@ function addTask(e) {
       outDuration: 750,
       classes: "rounded"
     });
+  } else if (taskInput.value !== "") {
+    //Create li element
+    const li = document.createElement("li");
+    //Add class to li
+    li.className = "collection-item";
+    //Create text node and appened to li
+    li.appendChild(document.createTextNode(taskInput.value));
+    //Create new link element
+    const link = document.createElement("a");
+    //add class to link
+    link.className = "delete-item secondary-content";
+    //Add icon html
+    link.innerHTML = "<i class='fad fa-trash-alt fa-lg'></i>";
+    //Append the link to the li
+    li.appendChild(link);
+
+    //Append li to ul
+    taskList.appendChild(li);
+
+    //Store in LocalStorage function invoked with task input value
+    storeTaskInLocalStorage(taskInput.value);
+
+    //Clear input
+    taskInput.value = "";
+  }
+  e.preventDefault();
+}
+
+//Store Task to local Storage Function
+function storeTaskInLocalStorage(task) {
+  let tasks;
+  if (localStorage.getItem("tasks") === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
   }
 
-  //Create li element
-  const li = document.createElement("li");
-  //Add class to li
-  li.className = "collection-item";
-  //Create text node and appened to li
-  li.appendChild(document.createTextNode(taskInput.value));
-  //Create new link element
-  const link = document.createElement("a");
-  //add class to link
-  link.className = "delete-item secondary-content";
-  //Add icon html
-  link.innerHTML = "<i class='fad fa-trash-alt fa-lg'></i>";
-  //Append the link to the li
-  li.appendChild(link);
-
-  //Append li to ul
-  taskList.appendChild(li);
-
-  //Clear input
-  taskInput.value = "";
-
-  e.preventDefault();
+  tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 //Remove Task function
